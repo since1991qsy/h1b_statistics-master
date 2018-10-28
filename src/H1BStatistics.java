@@ -63,7 +63,7 @@ public class H1BStatistics {
 
     public static void main(String[] args) {
 	// write your code here
-        String path = "/Users/zxj/Downloads/h1b_input.csv";
+        String path = args[0];
         String currentPath = Paths.get(System.getProperty("user.dir")).toString();
         Path occupationPath = Paths.get(currentPath, "output", "top_10_occupations.txt");
         String occupationHeader = "TOP_OCCUPATIONS;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE\n";
