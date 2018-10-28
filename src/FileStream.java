@@ -1,24 +1,23 @@
-import org.w3c.dom.ls.LSException;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 /**
  * Created by zxj on 10/27/18.
  */
 
-class Counter {
+class IntegerCounter {
     private int value;
 
-    public Counter(int value) {
+    public IntegerCounter(int value) {
         this.value = value;
     }
 
-    public Counter() {
+    public IntegerCounter() {
         this.value = 0;
     }
 
@@ -71,19 +70,19 @@ public class FileStream {
                 Stream<String> restLines = br.lines();
                 recordField.setIndexFromList(util.split(firstLine, ';'));
                 Stream<Record> recordStream = getCertifiedRecords(recordField, restLines);
-                Counter counter = new Counter();
+                IntegerCounter integerCounter = new IntegerCounter();
                 recordStream.forEach(record -> {
                     if (!record.emptyState()){
-                        int stateTotal = stateMap.getOrDefault(record.state, 0);
-                        stateMap.put(record.state, stateTotal + 1);
+                        stateMap.computeIfPresent(record.state, ((key, value) -> value + 1));
+                        stateMap.putIfAbsent(record.state, 1);
                     }
                     if (!record.emptyOccupation()){
-                        int occupationTotal = occupationMap.getOrDefault(record.occupation, 0);
-                        occupationMap.put(record.occupation, occupationTotal + 1);
+                        occupationMap.computeIfPresent(record.occupation, ((key, value)-> value + 1));
+                        occupationMap.putIfAbsent(record.occupation, 1);
                     }
-                    counter.increment();
+                    integerCounter.increment();
                 });
-                return Optional.of(new Triple<>(occupationMap, stateMap, counter.getValue()));
+                return Optional.of(new Triple<>(occupationMap, stateMap, integerCounter.getValue()));
             }
         } catch (FileNotFoundException e) {
             System.out.println(String.format("File does not exist in path: %s;", filePath));
