@@ -46,15 +46,19 @@ public class RecordField {
         return stateIndex;
     }
 
-    private void getIndexFromList(List<String> fileds) {
+    public void setIndexFromList(List<String> fileds) {
         ListIterator<String> fieldIterator = fileds.listIterator();
         while (fieldIterator.hasNext()) {
             String nextField = fieldIterator.next();
             Integer index = fieldIterator.nextIndex();
-            if (nextField.equals(state)) setStateIndex(index);
-            if (nextField.equals(certified)) setCertifiedIndex(index);
-            if (nextField.equals(occupation)) setOccupationIndex(index);
+            if (nextField.equals(state)) setStateIndex(index - 1);
+            if (nextField.equals(certified)) setCertifiedIndex(index - 1);
+            if (nextField.equals(occupation)) setOccupationIndex(index - 1);
         }
+    }
+
+    public boolean existsEmptyIndex(){
+        return occupationIndex == -1 || certifiedIndex == -1 || stateIndex == -1;
     }
 
 }

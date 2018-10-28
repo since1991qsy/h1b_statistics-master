@@ -142,15 +142,15 @@ class TopTenCalculator {
                 }
 
 
-                String keyOccupation = removeStartAndTrailingNonLetterCharacter(data.get(soc_name_index));
-                String keyStates = removeStartAndTrailingNonLetterCharacter(data.get(employment_state_index));
+                String keyOccupation = util.trim(data.get(soc_name_index));
+                String keyStates = util.trim(data.get(employment_state_index));
 
 
                 // count for certified occupations
                 if (data.get(case_status_index).equals("CERTIFIED")) {
-                    if (keyOccupation.length() != 0)
+                    if (!keyOccupation.isEmpty())
                         certifiedOccupationsCount.put(keyOccupation, certifiedOccupationsCount.getOrDefault(keyOccupation, 0) + 1);
-                    if (keyStates.length() != 0)
+                    if (!keyOccupation.isEmpty())
                         certifiedStatesCount.put(keyStates, certifiedStatesCount.getOrDefault(keyStates, 0) + 1);
                     totalCertified[0]++;
                 }
@@ -160,18 +160,6 @@ class TopTenCalculator {
             e.printStackTrace();
         }
     }
-
-
-    private String removeStartAndTrailingNonLetterCharacter(String s) {
-        if (s.length() == 0) return s;
-
-        int start = 0, end = s.length() - 1;
-        while (start <= end && !Character.isLetter(s.charAt(start))) start++;
-        while (start <= end && !Character.isLetter(s.charAt(end))) end--;
-        String key = s.substring(start, end + 1);
-        return key;
-    }
-
 
     private String[] getTopK(Map<String, Integer> map, int K) {
         // reverse order top K PriorityQueue
