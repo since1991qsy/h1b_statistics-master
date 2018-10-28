@@ -1,3 +1,5 @@
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 
 /**
@@ -43,4 +45,16 @@ public class RecordField {
     public int getStateIndex() {
         return stateIndex;
     }
+
+    private void getIndexFromList(List<String> fileds) {
+        ListIterator<String> fieldIterator = fileds.listIterator();
+        while (fieldIterator.hasNext()) {
+            String nextField = fieldIterator.next();
+            Integer index = fieldIterator.nextIndex();
+            if (nextField.equals(state)) setStateIndex(index);
+            if (nextField.equals(certified)) setCertifiedIndex(index);
+            if (nextField.equals(occupation)) setOccupationIndex(index);
+        }
+    }
+
 }

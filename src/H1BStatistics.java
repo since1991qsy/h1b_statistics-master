@@ -14,7 +14,22 @@ public class H1BStatistics {
         System.out.println("finish counting, you can check the answer at output folder");
     }
 
-
+    public Stream<Record> getCertifiedRecords(
+        RecordField field,
+        Stream<String> lineStream) {
+        StringUtil util = new StringUtil();
+        Stream<Optional<Record>> recordStream = lineStream.map(line -> {
+            List<String> recordList = util.split(line, ';');
+            if (!recordList.get(field.getCertifiedIndex()).equals("CERTIFIED")) {
+                return Optional.empty();
+            }
+            String trimmedOccupation = util.trim(recordList.get(field.getOccupationIndex()));
+            String trimmedState = util.trim(recordList.get(field.getStateIndex()));
+            return Optional.of(new Record(trimmedOccupation, trimmedState));
+        });
+        return recordStream.filter(Optional::isPresent)
+            .map(Optional::get);
+    }
 
     public static void main(String[] args) {
 	// write your code here

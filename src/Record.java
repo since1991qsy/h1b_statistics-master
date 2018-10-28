@@ -18,4 +18,7 @@ public class Record {
         return state.isEmpty();
     }
 
+    public String toString(){
+        return occupation + "\t" + state;
+    }
 }

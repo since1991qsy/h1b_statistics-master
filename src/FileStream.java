@@ -28,40 +28,4 @@ public class FileStream {
             return Optional.empty();
         }
     }
-
-    public Stream<Record> getCertifiedRecords(
-        RecordField field,
-        Stream<String> lineStream) {
-        StringUtil util = new StringUtil();
-        Stream<Optional<Record>> recordStream = lineStream.map(line -> {
-            List<String> recordList = util.split(line, ';');
-            if (!recordList.get(field.getCertifiedIndex()).equals("CERTIFIED")) {
-                return Optional.empty();
-            }
-            String trimmedOccupation = util.trim(recordList.get(field.getOccupationIndex()));
-            String trimmedState = util.trim(recordList.get(field.getStateIndex()));
-            return Optional.of(new Record(trimmedOccupation, trimmedState));
-        });
-        return recordStream.filter(Optional::isPresent)
-            .map(Optional::get);
-    }
-
-    private RecordField getFieldIndex(List<String> fileds, RecordField recordField) {
-        ListIterator<String> fieldIterator = fileds.listIterator();
-        while (fieldIterator.hasNext()) {
-            String nextField = fieldIterator.next();
-            Integer index = fieldIterator.nextIndex();
-            if (nextField.equals(recordField.state)){
-                recordField.setStateIndex(index);
-            }
-            if (nextField.equals(recordField.certified)){
-                recordField.setCertifiedIndex(index);
-            }
-            if (nextField.equals(recordField.occupation)){
-                recordField.setOccupationIndex(index);
-            }
-        }
-        return recordField;
-    }
-
 }
