@@ -40,6 +40,14 @@ public class FileStream {
         this.recordField = recordField;
     }
 
+    public RecordField getRecordField() {
+        return recordField;
+    }
+
+    public void setRecordField(RecordField recordField) {
+        this.recordField = recordField;
+    }
+
     public Stream<Record> getCertifiedRecords(
         RecordField field,
         Stream<String> lineStream) {
@@ -68,7 +76,14 @@ public class FileStream {
                 return Optional.empty();
             } else {
                 Stream<String> restLines = br.lines();
-                recordField.setIndexFromList(util.split(firstLine, ';'));
+                List<String> fieldList = util.split(firstLine, ';');
+                recordField.setIndexFromList(fieldList);
+                if (recordField.existsEmptyIndex()) {
+                    recordField = new RecordField("LCA_CASE_SOC_NAME", "STATUS", "LCA_CASE_WORKLOC1_STATE");
+                    recordField.setIndexFromList(fieldList);
+                    if (recordField.existsEmptyIndex()) return Optional.empty();
+                }
+
                 Stream<Record> recordStream = getCertifiedRecords(recordField, restLines);
                 IntegerCounter integerCounter = new IntegerCounter();
                 recordStream.forEach(record -> {
@@ -87,10 +102,12 @@ public class FileStream {
         } catch (FileNotFoundException e) {
             System.out.println(String.format("File does not exist in path: %s;", filePath));
             e.printStackTrace();
+            System.exit(1);
             return Optional.empty();
         } catch (IOException e) {
             System.out.println(String.format("Failed to open file: %s;", filePath));
             e.printStackTrace();
+            System.exit(1);
             return Optional.empty();
         }
     }
